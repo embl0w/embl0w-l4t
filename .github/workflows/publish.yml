@@ -1,0 +1,38 @@
+name: Build and release bootable image
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  publish:
+    name: Build and release
+    runs-on: ubuntu-latest
+    steps:
+      - name: output vars
+        id: vars
+        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: setup
+        run: time make setup
+      - name: build
+        run: time make build
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: true
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/image/boot.img.gz
+          asset_name: embl0w-l4t-${{ steps.vars.outputs.short_ref }}.img.gz
+          asset_content_type: application/octet-stream

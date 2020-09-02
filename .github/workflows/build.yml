@@ -1,5 +1,6 @@
+name: Build bootable image
 on:
-  - workflow_dispatch
+  workflow_dispatch: {}
 jobs:
   build:
     name: Build
