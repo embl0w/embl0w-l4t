@@ -1,0 +1,3 @@
+#!/bin/bash
+openbox &
+exec chromium-browser --kiosk

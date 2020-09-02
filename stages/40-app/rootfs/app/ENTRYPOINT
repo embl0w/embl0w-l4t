@@ -1,0 +1,7 @@
+#!/bin/bash
+while true; do
+    xinit ./ENTRYX -- -retro -dpms
+    echo "Terminated exit code $?"
+    echo "10 seconds to restart..."
+    sleep 10
+done
